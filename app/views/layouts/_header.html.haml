@@ -1,0 +1,53 @@
+%nav.navbar.navbar-fixed-top
+  .container
+    .clearfix
+      .navbar-brand.pull-xs-left= link_to "Couittar", root_path
+      %button.navbar-toggler.hidden-sm-up.pull-xs-right{"data-target" => "#exCollapsingNavbar2", "data-toggle" => "collapse", type: "button"}
+        ☰
+      #exCollapsingNavbar2.collapse.navbar-toggleable-xs.pull-xs-right
+        %ul.nav.navbar-nav
+        - if user_signed_in?
+          %li.nav-item.nav-link
+            .dropdown
+              #dropdownMenu1.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown"}
+                = current_user.name
+              .user-menu.dropdown-menu.dropdown-menu-right{"aria-labelledby" => "dropdownMenu1"}
+                .p-x-1= link_to "プロフィール設定", edit_user_registration_path
+                .dropdown-divider
+                .p-x-1= link_to "ログアウト", destroy_user_session_path, method: :delete
+          %li.nav-item
+            %button.btn.btn-sm.btn-primary{"data-target" => "#myModal", "data-toggle" => "modal", type: "button"}
+              ツイート
+          #myModal.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "myModalLabel", role: "dialog", tabindex: "-1"}
+            .modal-dialog{role: "document"}
+              .modal-content
+                = form_for(Tweet.new) do |f|
+                  .modal-header
+                    %button.close{"aria-label" => "Close", "data-dismiss" => "modal", type: "button"}
+                      %span{"aria-hidden" => "true"} &times;
+                    %h6#myModalLabel.modal-title.text-xs-center ツイートする
+                  .modal-body
+                    .field
+                      = f.text_area :message, class: "form-control", placeholder: "名言を入力してください"
+                  .modal-footer
+                    = f.submit "投稿する", class: "btn btn-sm btn-primary"
+        - else
+          %li.nav-item.nav-link
+            .dropdown
+              #dropdownMenu1.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown"}
+                アカウントをお持ちの場合 ログイン
+              .signin.dropdown-menu.dropdown-menu-right.p-a-1{"aria-labelledby" => "dropdownMenu1"}
+                %small アカウントをお持ちの場合
+                = form_for(User.new, url: user_session_path) do |f|
+                  .field
+                    = f.email_field :email, autofocus: true, class: "form-control", placeholder: "メールアドレス"
+                  .field
+                    = f.password_field :password, autocomplete: "off", class: "form-control", placeholder: "パスワード"
+                  .field
+                    = f.check_box :remember_me
+                    %small= f.label :remember_me, "保存する"
+                  .actions
+                    = f.submit "ログイン", class: "btn btn-sm btn-block btn-primary"
+                  .dropdown-divider
+                  %small Couittarを使ってみよう
+                  = link_to "アカウント作成", new_user_registration_path, class: "btn btn-sm btn-block btn-info"
